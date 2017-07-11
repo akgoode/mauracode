@@ -1,5 +1,11 @@
 module Api
   class VendorsController < ApiBaseController
+
+    def create
+      @vendor = Vendor.create(vendor_params)
+
+      render json: @vendor
+    end
     private
 
     def vendor_params

@@ -3,7 +3,7 @@ module Api
     attributes :id, :vendors, :user
 
     def vendors
-      object.vendors.pluck(:name)
+      object.vendors.pluck(:name, :care_type)
     end
   end
 end

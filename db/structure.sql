@@ -87,8 +87,7 @@ CREATE TABLE vendors (
     city character varying,
     state character varying,
     zip character varying,
-    price_rating integer,
-    wellist_id integer
+    price_rating integer
 );
 
 
@@ -112,13 +111,44 @@ ALTER SEQUENCE vendors_id_seq OWNED BY vendors.id;
 
 
 --
+-- Name: wellist_vendors; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE wellist_vendors (
+    id integer NOT NULL,
+    wellist_id integer,
+    vendor_id integer,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: wellist_vendors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE wellist_vendors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: wellist_vendors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE wellist_vendors_id_seq OWNED BY wellist_vendors.id;
+
+
+--
 -- Name: wellists; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE wellists (
     id integer NOT NULL,
-    user_id integer,
-    vendor_id integer
+    user_id integer
 );
 
 
@@ -159,6 +189,13 @@ ALTER TABLE ONLY vendors ALTER COLUMN id SET DEFAULT nextval('vendors_id_seq'::r
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY wellist_vendors ALTER COLUMN id SET DEFAULT nextval('wellist_vendors_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY wellists ALTER COLUMN id SET DEFAULT nextval('wellists_id_seq'::regclass);
 
 
@@ -179,6 +216,14 @@ ALTER TABLE ONLY vendors
 
 
 --
+-- Name: wellist_vendors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY wellist_vendors
+    ADD CONSTRAINT wellist_vendors_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: wellists_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -187,10 +232,17 @@ ALTER TABLE ONLY wellists
 
 
 --
--- Name: index_vendors_on_wellist_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_wellist_vendors_on_vendor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_vendors_on_wellist_id ON vendors USING btree (wellist_id);
+CREATE INDEX index_wellist_vendors_on_vendor_id ON wellist_vendors USING btree (vendor_id);
+
+
+--
+-- Name: index_wellist_vendors_on_wellist_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_wellist_vendors_on_wellist_id ON wellist_vendors USING btree (wellist_id);
 
 
 --
@@ -201,25 +253,10 @@ CREATE INDEX index_wellists_on_user_id ON wellists USING btree (user_id);
 
 
 --
--- Name: index_wellists_on_vendor_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_wellists_on_vendor_id ON wellists USING btree (vendor_id);
-
-
---
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
-
-
---
--- Name: fk_rails_02705fc62d; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY vendors
-    ADD CONSTRAINT fk_rails_02705fc62d FOREIGN KEY (wellist_id) REFERENCES wellists(id);
 
 
 --
@@ -231,11 +268,19 @@ ALTER TABLE ONLY wellists
 
 
 --
--- Name: fk_rails_15c9c576f3; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_67a7c2d068; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY wellists
-    ADD CONSTRAINT fk_rails_15c9c576f3 FOREIGN KEY (vendor_id) REFERENCES vendors(id);
+ALTER TABLE ONLY wellist_vendors
+    ADD CONSTRAINT fk_rails_67a7c2d068 FOREIGN KEY (vendor_id) REFERENCES vendors(id);
+
+
+--
+-- Name: fk_rails_93d32d854d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY wellist_vendors
+    ADD CONSTRAINT fk_rails_93d32d854d FOREIGN KEY (wellist_id) REFERENCES wellists(id);
 
 
 --
@@ -248,5 +293,5 @@ INSERT INTO schema_migrations (version) VALUES ('20151023204542');
 
 INSERT INTO schema_migrations (version) VALUES ('20170706235844');
 
-INSERT INTO schema_migrations (version) VALUES ('20170707002323');
+INSERT INTO schema_migrations (version) VALUES ('20170708174129');
 

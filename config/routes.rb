@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :wellist_vendors
   namespace :api, defaults: { format: 'json' } do
     resources :users, only: [:show, :update] do
       resource :wellist, only: [:update, :destroy], controller: 'wellist'
